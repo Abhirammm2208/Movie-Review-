@@ -63,4 +63,20 @@ router.post(
     }
 );
 
+// @route   GET api/reviews/recent
+// @desc    Get recent reviews
+// @access  Public
+router.get('/recent', async (req, res) => {
+    try {
+        const reviews = await Review.find()
+            .sort({ _id: -1 }) // Sort by newest first (using _id which has timestamp embedded)
+            .limit(10) // Limit to 10 recent reviews
+            .populate('reviewer', ['username']);
+        res.json(reviews);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 module.exports = router;
